@@ -49,6 +49,19 @@ export default class Board {
         this.#element.addEventListener("click", this.#clickCallback);
     }
 
+    insertColor(color: Color, coordinates: Coordinates): void {
+        const [x, y] = coordinates;
+
+        for (let i = this.#grid.length - 1; i >= 0; i--) {
+            const cell = this.#grid[i][y];
+            if (x === i && cell.color !== "") return;
+            if (cell.color !== "") continue;
+
+            cell.color = color;
+            return;
+        }
+    }
+
     findCell(coordinates: Coordinates): Cell | undefined {
         const cells: Cell[] = this.#grid.flat(1);
         const cell = cells.find(cell => {
