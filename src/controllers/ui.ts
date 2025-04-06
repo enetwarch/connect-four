@@ -1,5 +1,6 @@
 import Button from "../modules/button.ts";
 import Modal from "../modules/modal.ts";
+import Form from "../modules/form.ts";
 
 export default class UI {
     #resetButton: Button;
@@ -9,6 +10,7 @@ export default class UI {
     #playButton: Button;
     #userButton: Button;
     #playerModal: Modal;
+    #playerForm: Form;
 
     constructor() {
         this.#resetButton = UI.createButton("resetButton");
@@ -34,6 +36,9 @@ export default class UI {
 
         this.#playerModal = UI.createModal("playerModal");
         this.#playerModal.addEventListener("close", this.onPlayerModalClose.bind(this));
+
+        this.#playerForm = UI.createForm("playerForm");
+        this.#playerForm.onSubmit(this.onPlayerFormSubmit.bind(this));
 
         this.#playButton.click();
     }
@@ -113,6 +118,10 @@ export default class UI {
         }
     }
 
+    private onPlayerFormSubmit(formData: FormData): void {
+
+    }
+
     private static getElementById(id: string): HTMLElement {
         const element = document.getElementById(id);
         if (!element) {
@@ -152,5 +161,14 @@ export default class UI {
         }
 
         return new Modal(element, closeButton);
+    }
+
+    private static createForm(id: string): Form {
+        const element = UI.getElementById(id);
+        if (!(element instanceof HTMLFormElement)) {
+            throw Error(`The element with id "#${id}" is not a form.`);
+        }
+        
+        return new Form(element);
     }
 }
