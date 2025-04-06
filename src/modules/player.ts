@@ -4,7 +4,9 @@ export default class Player {
     #name: string;
     #color: Color;
     #number: number;
+
     #turn: boolean;
+    #winner: boolean;
 
     constructor(name: string, color: Color, number: number) {
         this.#name = name;
@@ -12,6 +14,7 @@ export default class Player {
         this.#number = number;
 
         this.#turn = false;
+        this.#winner = false;
     }
 
     get name(): string {
@@ -28,6 +31,10 @@ export default class Player {
 
     get turn(): boolean {
         return this.#turn;
+    }
+
+    get winner(): boolean {
+        return this.#winner;
     }
 
     set name(value: string) {
@@ -48,5 +55,9 @@ export default class Player {
 
     set turn(value: boolean) {
         this.#turn = value;
+    }
+
+    set winner(value: boolean) {
+        this.#winner = value;
     }
 }

@@ -1,18 +1,31 @@
+import Observable from "./observable.ts";
+import Player from "../modules/player.ts";
 import Button from "../modules/button.ts";
 import Modal from "../modules/modal.ts";
 import Form from "../modules/form.ts";
 
 export default class UI {
+    #observable: Observable;
+    #players: Player[];
+
     #resetButton: Button;
-    #resetModal: Modal;
     #noResetButton: Button;
     #yesResetButton: Button;
     #playButton: Button;
     #userButton: Button;
+    #okWinnerButton: Button;
+
+    #resetModal: Modal;
     #playerModal: Modal;
+    #winnerModal: Modal;
+
     #playerForm: Form;
 
-    constructor() {
+    constructor(observable: Observable) {
+        this.#observable = observable;
+        this.#players = this.#observable.players;
+        this.#observable.subscribe(this.setPlayers.bind(this));
+
         this.#resetButton = UI.createButton("resetButton");
         this.#resetButton.addEventListener("toggle", this.onResetButtonToggle.bind(this));
         this.#resetButton.addEventListener("click", this.onResetButtonClick.bind(this));
@@ -40,7 +53,20 @@ export default class UI {
         this.#playerForm = UI.createForm("playerForm");
         this.#playerForm.onSubmit(this.onPlayerFormSubmit.bind(this));
 
+        this.#winnerModal = UI.createModal("winnerModal");
+        this.#winnerModal.addEventListener("close", this.onWinnerModalClose.bind(this));
+        document.addEventListener("gameover", this.onGameover.bind(this));
+
+        this.#okWinnerButton = UI.createButton("okWinnerButton");
+        this.#okWinnerButton.addEventListener("click", this.onOkWinnerButtonClick.bind(this));
+
+        document.addEventListener("contextmenu", event => event.preventDefault());
+
         this.#playButton.click();
+    }
+
+    private setPlayers(value: Player[]) {
+        this.#players = value;
     }
 
     private onResetButtonToggle(): void {
@@ -48,12 +74,6 @@ export default class UI {
             this.#resetModal.show();
 
             if (this.#playButton.toggled) {
-                this.#playButton.click();
-            }
-        } else {
-            this.#resetModal.close();
-
-            if (!this.#playButton.toggled) {
                 this.#playButton.click();
             }
         }
@@ -67,6 +87,10 @@ export default class UI {
         if (this.#resetButton.toggled) {
             this.#resetButton.click();
         }
+
+        if (!this.#playButton.toggled) {
+            this.#playButton.click();
+        }
     }
 
     private onNoResetButtonClick(): void {
@@ -75,6 +99,8 @@ export default class UI {
 
     private onYesResetButtonClick(): void {
         document.dispatchEvent(new Event("gamereset"));
+        this.#playButton.enabled = true;
+
         this.#resetModal.close();
     }
     
@@ -89,6 +115,7 @@ export default class UI {
     }
 
     private onPlayButtonClick(): void {
+        if (!this.#playButton.enabled) return;
         this.#playButton.toggle();
     }
 
@@ -97,12 +124,6 @@ export default class UI {
             this.#playerModal.show();
 
             if (this.#playButton.toggled) {
-                this.#playButton.click();
-            }
-        } else {
-            this.#playerModal.close();
-
-            if (!this.#playButton.toggled) {
                 this.#playButton.click();
             }
         }
@@ -116,11 +137,56 @@ export default class UI {
         if (this.#userButton.toggled) {
             this.#userButton.click();
         }
+
+        if (!this.#playButton.toggled) {
+            this.#playButton.click();
+        }
     }
 
     private onPlayerFormSubmit(formData: FormData): void {
-        console.log(formData);
+        const nameOne = formData.get("playerOne")?.toString().trim();
+        const nameTwo = formData.get("playerTwo")?.toString().trim();
+    
+        const playerOne = this.#players[0];
+        const playerTwo = this.#players[1];
+        
+        playerOne.name = nameOne || "Player 1";
+        playerTwo.name = nameTwo || "Player 2";
+
+        this.#observable.update(this.#players);
+
         this.#playerModal.close();
+    }
+
+    private onGameover() {
+        const winner = this.#players.find(player => player.winner);
+        const message = winner ? `${winner.name} has won!` : "It's a draw!";
+
+        if (this.#playButton.toggled) {
+            this.#playButton.click();
+        }
+
+        this.#playButton.enabled = false;
+
+        setTimeout(() => {
+            const winnerText = UI.getElementById("winnerText");
+            winnerText.innerText = message;
+
+            this.#winnerModal.show();
+        }, 1000);
+    }
+
+    private onWinnerModalClose(): void {
+        const winnerText = UI.getElementById("winnerText");
+        winnerText.innerText = "";
+
+        if (!this.#resetButton.toggled) {
+            this.#resetButton.click();
+        }
+    }
+
+    private onOkWinnerButtonClick(): void {
+        this.#winnerModal.close();
     }
 
     private static getElementById(id: string): HTMLElement {

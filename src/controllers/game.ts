@@ -1,15 +1,20 @@
+import Observable from "./observable.ts";
 import Player from "../modules/player.ts";
 import Board from "../modules/board.ts";
 import Cell from "../modules/cell.ts";
 
 export default class Game {
+    #observable: Observable;
     #players: Player[];
     #board: Board;
+
     #paused: boolean;
     #finished: boolean;
 
-    constructor(players: Player[]) {
-        this.#players = players;
+    constructor(observable: Observable) {
+        this.#observable = observable;
+        this.#players = this.#observable.players;
+        this.#observable.subscribe(this.setPlayers.bind(this));
 
         const boardElement = document.getElementById("board");
         if (!(boardElement instanceof HTMLDivElement)) {
@@ -28,6 +33,10 @@ export default class Game {
         document.addEventListener("gamereset", this.reset.bind(this));
 
         this.reset();
+    }
+
+    setPlayers(value: Player[]) {
+        this.#players = value;
     }
 
     get paused(): boolean {
@@ -51,10 +60,16 @@ export default class Game {
         this.#finished = false;
 
         this.#board.reset();
-        this.#players.forEach(player => player.turn = false);
+
+        this.#players.forEach(player => {
+            player.turn = false
+            player.winner = false;
+        });
 
         const playerOne = this.#players[0];
         playerOne.turn = true;
+
+        this.#observable.update(this.#players);
     }
 
     playTurn(cell: Cell): void {
@@ -69,17 +84,22 @@ export default class Game {
 
         const winner = this.#board.isWinner(currentPlayer.color);
         if (winner) {
-            this.finishGame(`${currentPlayer.name} won!`);
+            this.finished = true;
+            currentPlayer.winner = true;
+            document.dispatchEvent(new Event("gameover"));
 
             this.#board.highlightWinnerCells(winner);
         } else if (this.#board.isEveryCellColored()) {
-            this.finishGame("It's a draw!");
+            this.finished = true;
+            document.dispatchEvent(new Event("gameover"));
         } else {
             const nextPlayer = this.getNextPlayer(currentPlayer);
 
             currentPlayer.turn = false;
             nextPlayer.turn = true;
         }
+
+        this.#observable.update(this.#players);
     }
 
     getNextPlayer(currentPlayer: Player | undefined): Player {
@@ -95,13 +115,6 @@ export default class Game {
         const nextPlayerIndex = this.#players.indexOf(currentPlayer) + 1;
         const nextPlayer = this.#players[nextPlayerIndex % this.#players.length];
         return nextPlayer;
-    }
-
-    finishGame(message: string): void {
-        this.finished = true;
-        document.dispatchEvent(new CustomEvent("gameover", {
-            "detail": { message }
-        }));
     }
 
     private static createBoardGrid(rows: number, columns: number): Cell[][] {
