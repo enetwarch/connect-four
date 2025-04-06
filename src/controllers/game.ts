@@ -11,7 +11,7 @@ export default class Game {
     #paused: boolean;
     #finished: boolean;
 
-    constructor(observable: Observable) {
+    public constructor(observable: Observable) {
         this.#observable = observable;
         this.#players = this.#observable.players;
         this.#observable.subscribe(this.setPlayers.bind(this));
@@ -28,34 +28,18 @@ export default class Game {
         this.#paused = false;
         this.#finished = false;
 
-        document.addEventListener("gamepause", () => this.paused = true);
-        document.addEventListener("gameresume", () => this.paused = false);
+        document.addEventListener("gamepause", () => this.#paused = true);
+        document.addEventListener("gameresume", () => this.#paused = false);
         document.addEventListener("gamereset", this.reset.bind(this));
 
         this.reset();
     }
 
-    setPlayers(value: Player[]) {
+    private setPlayers(value: Player[]) {
         this.#players = value;
     }
 
-    get paused(): boolean {
-        return this.#paused;
-    }
-
-    get finished(): boolean {
-        return this.#finished;
-    }
-
-    set paused(value: boolean) {
-        this.#paused = value;
-    }
-
-    set finished(value: boolean) {
-        this.#finished = value;
-    }
-
-    reset(): void {
+    private reset(): void {
         this.#paused = false;
         this.#finished = false;
 
@@ -72,8 +56,8 @@ export default class Game {
         this.#observable.update(this.#players);
     }
 
-    playTurn(cell: Cell): void {
-        if (this.paused || this.finished) return;
+    private playTurn(cell: Cell): void {
+        if (this.#paused || this.#finished) return;
 
         const currentPlayer = this.#players.find(player => player.turn);
         if (!currentPlayer) {
@@ -84,13 +68,13 @@ export default class Game {
 
         const winner = this.#board.isWinner(currentPlayer.color);
         if (winner) {
-            this.finished = true;
+            this.#finished = true;
             currentPlayer.winner = true;
             document.dispatchEvent(new Event("gameover"));
 
             this.#board.highlightWinnerCells(winner);
         } else if (this.#board.isEveryCellColored()) {
-            this.finished = true;
+            this.#finished = true;
             document.dispatchEvent(new Event("gameover"));
         } else {
             const nextPlayer = this.getNextPlayer(currentPlayer);
@@ -102,7 +86,7 @@ export default class Game {
         this.#observable.update(this.#players);
     }
 
-    getNextPlayer(currentPlayer: Player | undefined): Player {
+    private getNextPlayer(currentPlayer: Player | undefined): Player {
         if (currentPlayer === undefined) {
             currentPlayer = this.#players.find(player => player.turn);
         }

@@ -6,20 +6,20 @@ export default class Observable {
     #players: Player[]
     #observers: Observer[];
 
-    constructor(players: Player[]) {
+    public constructor(players: Player[]) {
         this.#players = players;
         this.#observers = [];
     }
 
-    get players(): Player[] {
+    public get players(): Player[] {
         return this.#players;
     }
 
-    subscribe(observer: Observer) {
+    public subscribe(observer: Observer) {
         this.#observers.push(observer);
     }
 
-    unsubscribe(observer: Observer) {
+    public unsubscribe(observer: Observer) {
         const index = this.#observers.indexOf(observer);
         if (index === -1) {
             throw Error(`${observer} observer does not exist.`);
@@ -28,7 +28,7 @@ export default class Observable {
         this.#observers.splice(index, 1);
     }
 
-    update(players: Player[]) {
+    public update(players: Player[]) {
         if (players.length !== this.#players.length) {
             throw Error("players argument exceeded expected length.");
         }
@@ -37,7 +37,7 @@ export default class Observable {
         this.notify(this.#players);
     }
 
-    notify(data: Player[]) {
+    private notify(data: Player[]) {
         this.#observers.forEach(observer => observer(data));
     }
 }

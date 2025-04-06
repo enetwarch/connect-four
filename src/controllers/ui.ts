@@ -21,7 +21,7 @@ export default class UI {
 
     #playerForm: Form;
 
-    constructor(observable: Observable) {
+    public constructor(observable: Observable) {
         this.#observable = observable;
         this.#players = this.#observable.players;
         this.#observable.subscribe(this.setPlayers.bind(this));
