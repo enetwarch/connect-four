@@ -3,7 +3,7 @@ export default class Form {
     #fields: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)[];
     #submitEvent: EventListener;
 
-    constructor(element: HTMLFormElement) {
+    public constructor(element: HTMLFormElement) {
         this.#element = element;
 
         this.#fields = Array.from(this.#element.querySelectorAll("[name]"));
@@ -14,15 +14,15 @@ export default class Form {
         this.#submitEvent = () => {};
     }
 
-    submit(): void {
+    public submit(): void {
         this.#element.dispatchEvent(new Event("submit"));
     }
 
-    reset(): void {
+    public reset(): void {
         this.#element.reset();
     }
 
-    onSubmit(submit: (formData: FormData) => void): void {
+    public onSubmit(submit: (formData: FormData) => void): void {
         this.#element.removeEventListener("submit", this.#submitEvent);
 
         this.#submitEvent = event => {
@@ -37,7 +37,7 @@ export default class Form {
         this.#element.addEventListener("submit", this.#submitEvent);
     }
 
-    insertValues(values: { [key: string]: string }): void {
+    public insertValues(values: { [key: string]: string }): void {
         Object.entries(values).forEach(([key, value]) => {
             this.#fields.forEach(field => {
                 if (field.name === key) {

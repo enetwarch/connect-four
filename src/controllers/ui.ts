@@ -115,7 +115,6 @@ export default class UI {
     }
 
     private onPlayButtonClick(): void {
-        if (!this.#playButton.enabled) return;
         this.#playButton.toggle();
     }
 

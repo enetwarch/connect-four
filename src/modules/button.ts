@@ -3,52 +3,52 @@ export default class Button {
     #toggled: boolean;
     #enabled: boolean;
 
-    constructor(element: HTMLButtonElement) {
+    public constructor(element: HTMLButtonElement) {
         this.#element = element;
         this.#toggled = false;
         this.#enabled = true;
     }
 
-    get toggled(): boolean {
+    public get toggled(): boolean {
         return this.#toggled;
     }
 
-    get enabled(): boolean {
+    public get enabled(): boolean {
         return this.#enabled;
     }
 
-    set toggled(value: boolean) {
+    public set toggled(value: boolean) {
         this.#toggled = value;
     }
 
-    set enabled(value: boolean) {
+    public set enabled(value: boolean) {
         this.#enabled = value;
     }
 
-    addEventListener(type: string, callback: EventListener): void {
-        this.#element.addEventListener(type, callback);
-    }
+    public click(): void {
+        if (!this.#enabled) return;
 
-    removeEventListener(type: string, callback: EventListener): void {
-        this.#element.removeEventListener(type, callback);
-    }
-
-    click(): void {
         this.#element.click();
     }
 
-    toggle(): void {
-        this.toggled = !this.toggled;
+    public toggle(): void {
+        if (!this.#enabled) return;
+
+        this.#toggled = !this.#toggled;
         this.#element.dispatchEvent(new Event("toggle"));
 
         this.invert();
     }
 
-    invert(invertClass = "inverted"): void {
-        this.#element.classList.toggle(invertClass);
+    public addEventListener(type: string, callback: EventListener): void {
+        this.#element.addEventListener(type, callback);
     }
 
-    changeIcon(iconClass: string): void {
+    public removeEventListener(type: string, callback: EventListener): void {
+        this.#element.removeEventListener(type, callback);
+    }
+
+    public changeIcon(iconClass: string): void {
         const icon = this.#element.querySelector("i");
         if (!icon) {
             throw Error(`${this.#element} does not have an icon.`);
@@ -59,5 +59,9 @@ export default class Button {
         const lastElement = icon.classList[icon.classList.length - 1];
         icon.classList.remove(lastElement);
         icon.classList.add(iconClass);
+    }
+
+    private invert(invertClass = "inverted"): void {
+        this.#element.classList.toggle(invertClass);
     }
 }

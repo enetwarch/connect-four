@@ -8,7 +8,7 @@ export default class Player {
     #turn: boolean;
     #winner: boolean;
 
-    constructor(name: string, color: Color, number: number) {
+    public constructor(name: string, color: Color, number: number) {
         this.#name = name;
         this.#color = color;
         this.#number = number;
@@ -17,27 +17,27 @@ export default class Player {
         this.#winner = false;
     }
 
-    get name(): string {
+    public get name(): string {
         return this.#name;
     }
 
-    get color(): Color {
+    public get color(): Color {
         return this.#color;
     }
 
-    get number(): number {
+    public get number(): number {
         return this.#number;
     }
 
-    get turn(): boolean {
+    public get turn(): boolean {
         return this.#turn;
     }
 
-    get winner(): boolean {
+    public get winner(): boolean {
         return this.#winner;
     }
 
-    set name(value: string) {
+    public set name(value: string) {
         if (value === "") {
             value = `Player ${this.number}`;
         }
@@ -45,19 +45,19 @@ export default class Player {
         this.#name = value;
     }
 
-    set color(value: Color) {
+    public set color(value: Color) {
         this.#color = value;
     }
 
-    set number(value: number) {
+    public set number(value: number) {
         this.#number = value
     }
 
-    set turn(value: boolean) {
+    public set turn(value: boolean) {
         this.#turn = value;
     }
 
-    set winner(value: boolean) {
+    public set winner(value: boolean) {
         this.#winner = value;
     }
 }

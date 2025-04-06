@@ -9,7 +9,7 @@ export default class Board {
     #grid: Cell[][];
     #clickCallback: EventListener;
 
-    constructor(element: HTMLDivElement, grid: Cell[][]) {
+    public constructor(element: HTMLDivElement, grid: Cell[][]) {
         this.#element = element;
         this.#grid = grid;
         this.#clickCallback = () => {};
@@ -19,17 +19,17 @@ export default class Board {
         });
     }
 
-    reset(): void {
+    public reset(): void {
         const cells: Cell[] = this.#grid.flat(1);
         cells.forEach(cell => cell.reset());
     }
 
-    isEveryCellColored(): boolean {
+    public isEveryCellColored(): boolean {
         const cells: Cell[] = this.#grid.flat(1);
         return cells.every(cell => cell.color !== "");
     }
 
-    onCellClick(callback: (cell: Cell) => void, cellClassQuery = ".board-cell"): void {
+    public onCellClick(callback: (cell: Cell) => void, cellClassQuery = ".board-cell"): void {
         this.#element.removeEventListener("click", this.#clickCallback);
 
         this.#clickCallback = event => {
@@ -49,7 +49,7 @@ export default class Board {
         this.#element.addEventListener("click", this.#clickCallback);
     }
 
-    insertColor(color: Color, coordinates: Coordinates): void {
+    public insertColor(color: Color, coordinates: Coordinates): void {
         const [x, y] = coordinates;
 
         for (let i = this.#grid.length - 1; i >= 0; i--) {
@@ -62,18 +62,7 @@ export default class Board {
         }
     }
 
-    findCell(coordinates: Coordinates): Cell | undefined {
-        const cells: Cell[] = this.#grid.flat(1);
-        const cell = cells.find(cell => {
-            return cell.coordinates.every((coord, i) => {
-                return coord === coordinates[i];
-            });
-        });
-
-        return cell;
-    }
-
-    isWinner(color: Color): Coordinates[] | false {
+    public isWinner(color: Color): Coordinates[] | false {
         for (const cell of this.#grid.flat(1)) {
             if (cell.color !== color) continue;
 
@@ -86,7 +75,14 @@ export default class Board {
         return false;
     }
 
-    getConsecutiveColors(direction: Direction, cell: Cell): Coordinates[] {
+    public highlightWinnerCells(coordinatesList: Coordinates[]): void {
+        coordinatesList.forEach(coordinates => {
+            const cell = this.findCell(coordinates);
+            cell?.highlightAsWinner();
+        });
+    }
+
+    private getConsecutiveColors(direction: Direction, cell: Cell): Coordinates[] {
         const [x, y] = cell.coordinates;
         const consecutiveMarks: Coordinates[] = [];
 
@@ -103,7 +99,7 @@ export default class Board {
         return consecutiveMarks;
     }
 
-    isValidCoordinates(coordinates: Coordinates): boolean {
+    private isValidCoordinates(coordinates: Coordinates): boolean {
         const [x, y] = coordinates;
         if (x < 0 || y < 0) return false;
         if (x >= this.#grid.length) return false;
@@ -112,11 +108,15 @@ export default class Board {
         return true;
     }
 
-    highlightWinnerCells(coordinatesList: Coordinates[]): void {
-        coordinatesList.forEach(coordinates => {
-            const cell = this.findCell(coordinates);
-            cell?.highlightAsWinner();
+    private findCell(coordinates: Coordinates): Cell | undefined {
+        const cells: Cell[] = this.#grid.flat(1);
+        const cell = cells.find(cell => {
+            return cell.coordinates.every((coord, i) => {
+                return coord === coordinates[i];
+            });
         });
+
+        return cell;
     }
 
     private static DIRECTIONS: Direction[] = [

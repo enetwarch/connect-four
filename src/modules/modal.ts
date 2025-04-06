@@ -3,7 +3,7 @@ export default class Modal {
     #closeButton: HTMLButtonElement;
     #shown: boolean;
 
-    constructor(element: HTMLDialogElement, closeButton: HTMLButtonElement) {
+    public constructor(element: HTMLDialogElement, closeButton: HTMLButtonElement) {
         this.#element = element;
         this.#closeButton = closeButton;
         this.#shown = false;
@@ -13,25 +13,17 @@ export default class Modal {
         this.#closeButton.addEventListener("click", this.onCloseButtonClick.bind(this));
     }
 
-    get shown(): boolean {
-        return this.#shown;
-    }
-
-    set shown(value: boolean) {
-        this.#shown = value;
-    }
-
     show(): void {
-        if (this.shown) return;
-        this.shown = true;
+        if (this.#shown) return;
+        this.#shown = true;
 
         this.#element.dispatchEvent(new Event("show"));
         this.#element.showModal();
     }
 
     close(): void {
-        if (!this.shown) return;
-        this.shown = false;
+        if (!this.#shown) return;
+        this.#shown = false;
 
         this.#element.close();
         this.#element.dispatchEvent(new Event("close"));
@@ -46,7 +38,7 @@ export default class Modal {
     }
 
     onEscapeKey(event: KeyboardEvent): void {
-        if (event.code === "Escape" && this.shown) {
+        if (event.code === "Escape" && this.#shown) {
             event.preventDefault();
             this.close();
         }
