@@ -132,7 +132,7 @@ body {
 }
 
 .board-cell.winner-cell {
-    border: var(--green);
+    border: 4px solid var(--green);
 }
 
 .modal {

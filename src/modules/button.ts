@@ -44,7 +44,7 @@ export default class Button {
         this.invert();
     }
 
-    invert(invertClass: string = "inverted"): void {
+    invert(invertClass = "inverted"): void {
         this.#element.classList.toggle(invertClass);
     }
 

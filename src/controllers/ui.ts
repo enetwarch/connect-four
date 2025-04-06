@@ -119,7 +119,8 @@ export default class UI {
     }
 
     private onPlayerFormSubmit(formData: FormData): void {
-
+        console.log(formData);
+        this.#playerModal.close();
     }
 
     private static getElementById(id: string): HTMLElement {
