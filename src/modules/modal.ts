@@ -13,7 +13,7 @@ export default class Modal {
         this.#closeButton.addEventListener("click", this.onCloseButtonClick.bind(this));
     }
 
-    show(): void {
+    public show(): void {
         if (this.#shown) return;
         this.#shown = true;
 
@@ -21,7 +21,7 @@ export default class Modal {
         this.#element.showModal();
     }
 
-    close(): void {
+    public close(): void {
         if (!this.#shown) return;
         this.#shown = false;
 
@@ -29,28 +29,28 @@ export default class Modal {
         this.#element.dispatchEvent(new Event("close"));
     }
     
-    addEventListener(type: string, callback: EventListener): void {
+    public addEventListener(type: string, callback: EventListener): void {
         this.#element.addEventListener(type, callback);
     }
 
-    removeEventListener(type: string, callback: EventListener): void {
+    public removeEventListener(type: string, callback: EventListener): void {
         this.#element.removeEventListener(type, callback);
     }
 
-    onEscapeKey(event: KeyboardEvent): void {
+    private onEscapeKey(event: KeyboardEvent): void {
         if (event.code === "Escape" && this.#shown) {
             event.preventDefault();
             this.close();
         }
     }
 
-    onOverlayClick(event: MouseEvent): void {
+    private onOverlayClick(event: MouseEvent): void {
         if (event.target === this.#element) {
             this.close();
         }
     }
 
-    onCloseButtonClick(): void {
+    private onCloseButtonClick(): void {
         this.close();
     }
 }
