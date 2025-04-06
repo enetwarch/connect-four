@@ -6,8 +6,8 @@ import Game from "./controllers/game.ts";
 
 window.addEventListener("load", () => {
     const players = [
-        new Player("Zero", "red", 1),
-        new Player("Bloom", "blue", 2)
+        new Player("", "red", 1),
+        new Player("", "blue", 2)
     ];
 
     const observable = new Players(players);

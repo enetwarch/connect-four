@@ -9,7 +9,7 @@ export default class Player {
     #winner: boolean;
 
     public constructor(name: string, color: Color, number: number) {
-        this.#name = name;
+        this.#name = name === "" ? `Player ${number}` : name;
         this.#color = color;
         this.#number = number;
 
@@ -59,5 +59,9 @@ export default class Player {
 
     public set winner(value: boolean) {
         this.#winner = value;
+    }
+
+    public isDefaultName(): boolean {
+        return this.#name === `Player ${this.#number}`;
     }
 }

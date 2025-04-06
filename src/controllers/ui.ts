@@ -48,6 +48,7 @@ export default class UI {
         this.#userButton.addEventListener("click", this.onUserButtonClick.bind(this));
 
         this.#playerModal = UI.createModal("playerModal");
+        this.#playerModal.addEventListener("show", this.onPlayerModalShow.bind(this));
         this.#playerModal.addEventListener("close", this.onPlayerModalClose.bind(this));
 
         this.#playerForm = UI.createForm("playerForm");
@@ -132,6 +133,18 @@ export default class UI {
         this.#userButton.toggle();
     }
 
+    private onPlayerModalShow(): void {
+        const playerOne = this.#players[0];
+        const playerTwo = this.#players[1];
+
+        const values = {
+            "playerOne": playerOne.isDefaultName() ? "" : playerOne.name,
+            "playerTwo": playerTwo.isDefaultName() ? "" : playerTwo.name
+        };
+        
+        this.#playerForm.insertValues(values);
+    }
+
     private onPlayerModalClose(): void {
         if (this.#userButton.toggled) {
             this.#userButton.click();
@@ -149,8 +162,8 @@ export default class UI {
         const playerOne = this.#players[0];
         const playerTwo = this.#players[1];
         
-        playerOne.name = nameOne || "Player 1";
-        playerTwo.name = nameTwo || "Player 2";
+        playerOne.name = nameOne || "";
+        playerTwo.name = nameTwo || "";
 
         this.#observable.update(this.#players);
 
