@@ -28,8 +28,8 @@ export default class Game {
 		this.#paused = false;
 		this.#finished = false;
 
-		document.addEventListener("gamepause", () => (this.#paused = true));
-		document.addEventListener("gameresume", () => (this.#paused = false));
+		document.addEventListener("gamepause", this.pause.bind(this));
+		document.addEventListener("gameresume", this.resume.bind(this));
 		document.addEventListener("gamereset", this.reset.bind(this));
 
 		this.reset();
@@ -39,16 +39,24 @@ export default class Game {
 		this.#players = value;
 	}
 
+	private pause() {
+		this.#paused = true;
+	}
+
+	private resume() {
+		this.#paused = false;
+	}
+
 	private reset(): void {
 		this.#paused = false;
 		this.#finished = false;
 
 		this.#board.reset();
 
-		this.#players.forEach((player) => {
+		for (const player of this.#players) {
 			player.turn = false;
 			player.winner = false;
-		});
+		}
 
 		const playerOne = this.#players[0];
 		playerOne.turn = true;
@@ -86,16 +94,7 @@ export default class Game {
 		this.#observable.update(this.#players);
 	}
 
-	private getNextPlayer(currentPlayer: Player | undefined): Player {
-		if (currentPlayer === undefined) {
-			currentPlayer = this.#players.find((player) => player.turn);
-		}
-
-		if (!currentPlayer) {
-			const nextPlayer = this.#players[0];
-			return nextPlayer;
-		}
-
+	private getNextPlayer(currentPlayer: Player): Player {
 		const nextPlayerIndex = this.#players.indexOf(currentPlayer) + 1;
 		const nextPlayer = this.#players[nextPlayerIndex % this.#players.length];
 		return nextPlayer;

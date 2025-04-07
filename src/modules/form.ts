@@ -38,12 +38,12 @@ export default class Form {
 	}
 
 	public insertValues(values: { [key: string]: string }): void {
-		Object.entries(values).forEach(([name, value]) => {
-			this.#fields.forEach((field) => {
+		for (const [name, value] of Object.entries(values)) {
+			for (const field of this.#fields) {
 				if (field.name === name) {
 					field.value = value;
 				}
-			});
-		});
+			}
+		}
 	}
 }

@@ -52,7 +52,8 @@ export default class Button {
 		const icon = this.#element.querySelector("i");
 		if (!icon) {
 			throw Error(`${this.#element} does not have an icon.`);
-		} else if (icon.classList.length === 0) {
+		}
+		if (icon.classList.length === 0) {
 			throw Error(`${this.#element} does not have any class.`);
 		}
 

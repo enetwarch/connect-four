@@ -38,11 +38,7 @@ export default class Player {
 	}
 
 	public set name(value: string) {
-		if (value === "") {
-			value = `Player ${this.number}`;
-		}
-
-		this.#name = value;
+		this.#name = value === "" ? `Player ${this.number}` : value;
 	}
 
 	public set color(value: Color) {

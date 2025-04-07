@@ -14,14 +14,16 @@ export default class Board {
 		this.#grid = grid;
 		this.#clickCallback = () => {};
 
-		this.#grid.flat(1).forEach((cell) => {
+		for (const cell of this.#grid.flat(1)) {
 			this.#element.appendChild(cell.element);
-		});
+		}
 	}
 
 	public reset(): void {
 		const cells: Cell[] = this.#grid.flat(1);
-		cells.forEach((cell) => cell.reset());
+		for (const cell of cells) {
+			cell.reset();
+		}
 	}
 
 	public isEveryCellColored(): boolean {
@@ -79,10 +81,10 @@ export default class Board {
 	}
 
 	public highlightWinnerCells(coordinatesList: Coordinates[]): void {
-		coordinatesList.forEach((coordinates) => {
+		for (const coordinates of coordinatesList) {
 			const cell = this.findCell(coordinates);
 			cell?.highlightAsWinner();
-		});
+		}
 	}
 
 	private getConsecutiveColors(

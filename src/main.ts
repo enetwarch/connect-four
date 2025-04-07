@@ -22,9 +22,9 @@ window.addEventListener("load", () => {
 	} else {
 		const parsedPlayers: Save[] = JSON.parse(storedPlayers);
 
-		parsedPlayers.forEach((player) => {
+		for (const player of parsedPlayers) {
 			players.push(new Player(player.name, player.color, player.number));
-		});
+		}
 	}
 
 	const observable = new Observable(players);
@@ -36,7 +36,7 @@ window.addEventListener("load", () => {
 		const players: Save[] = [];
 		const sessionPlayers: Player[] = observable.players;
 
-		sessionPlayers.forEach((player) => {
+		for (const player of sessionPlayers) {
 			const save: Save = {
 				name: player.name,
 				color: player.color,
@@ -44,7 +44,7 @@ window.addEventListener("load", () => {
 			};
 
 			players.push(save);
-		});
+		}
 
 		localStorage.setItem("players", JSON.stringify(players));
 	});

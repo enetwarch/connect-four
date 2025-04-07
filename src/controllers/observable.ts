@@ -38,6 +38,8 @@ export default class Observable {
 	}
 
 	private notify(data: Player[]) {
-		this.#observers.forEach((observer) => observer(data));
+		for (const observer of this.#observers) {
+			observer(data);
+		}
 	}
 }
