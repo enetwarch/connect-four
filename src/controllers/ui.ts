@@ -1,253 +1,298 @@
-import Observable from "./observable.ts";
-import Player from "../modules/player.ts";
 import Button from "../modules/button.ts";
-import Modal from "../modules/modal.ts";
 import Form from "../modules/form.ts";
+import Modal from "../modules/modal.ts";
+import type Player from "../modules/player.ts";
+import type Observable from "./observable.ts";
 
 export default class UI {
-    #observable: Observable;
-    #players: Player[];
+	#observable: Observable;
+	#players: Player[];
 
-    #resetButton: Button;
-    #noResetButton: Button;
-    #yesResetButton: Button;
-    #playButton: Button;
-    #userButton: Button;
-    #okWinnerButton: Button;
+	#resetButton: Button;
+	#noResetButton: Button;
+	#yesResetButton: Button;
+	#playButton: Button;
+	#userButton: Button;
+	#okWinnerButton: Button;
 
-    #resetModal: Modal;
-    #playerModal: Modal;
-    #winnerModal: Modal;
+	#resetModal: Modal;
+	#playerModal: Modal;
+	#winnerModal: Modal;
 
-    #playerForm: Form;
+	#playerForm: Form;
 
-    public constructor(observable: Observable) {
-        this.#observable = observable;
-        this.#players = this.#observable.players;
-        this.#observable.subscribe(this.setPlayers.bind(this));
+	public constructor(observable: Observable) {
+		this.#observable = observable;
+		this.#players = this.#observable.players;
+		this.#observable.subscribe(this.setPlayers.bind(this));
 
-        this.#resetButton = UI.createButton("resetButton");
-        this.#resetButton.addEventListener("toggle", this.onResetButtonToggle.bind(this));
-        this.#resetButton.addEventListener("click", this.onResetButtonClick.bind(this));
+		this.#resetButton = UI.createButton("resetButton");
+		this.#resetButton.addEventListener(
+			"toggle",
+			this.onResetButtonToggle.bind(this),
+		);
+		this.#resetButton.addEventListener(
+			"click",
+			this.onResetButtonClick.bind(this),
+		);
 
-        this.#resetModal = UI.createModal("resetModal");
-        this.#resetModal.addEventListener("close", this.onResetModalClose.bind(this));
+		this.#resetModal = UI.createModal("resetModal");
+		this.#resetModal.addEventListener(
+			"close",
+			this.onResetModalClose.bind(this),
+		);
 
-        this.#noResetButton = UI.createButton("noResetButton");
-        this.#noResetButton.addEventListener("click", this.onNoResetButtonClick.bind(this));
+		this.#noResetButton = UI.createButton("noResetButton");
+		this.#noResetButton.addEventListener(
+			"click",
+			this.onNoResetButtonClick.bind(this),
+		);
 
-        this.#yesResetButton = UI.createButton("yesResetButton");
-        this.#yesResetButton.addEventListener("click", this.onYesResetButtonClick.bind(this));
+		this.#yesResetButton = UI.createButton("yesResetButton");
+		this.#yesResetButton.addEventListener(
+			"click",
+			this.onYesResetButtonClick.bind(this),
+		);
 
-        this.#playButton = UI.createButton("playButton");
-        this.#playButton.addEventListener("toggle", this.onPlayButtonToggle.bind(this));
-        this.#playButton.addEventListener("click", this.onPlayButtonClick.bind(this));
+		this.#playButton = UI.createButton("playButton");
+		this.#playButton.addEventListener(
+			"toggle",
+			this.onPlayButtonToggle.bind(this),
+		);
+		this.#playButton.addEventListener(
+			"click",
+			this.onPlayButtonClick.bind(this),
+		);
 
-        this.#userButton = UI.createButton("userButton");
-        this.#userButton.addEventListener("toggle", this.onUserButtonToggle.bind(this));
-        this.#userButton.addEventListener("click", this.onUserButtonClick.bind(this));
+		this.#userButton = UI.createButton("userButton");
+		this.#userButton.addEventListener(
+			"toggle",
+			this.onUserButtonToggle.bind(this),
+		);
+		this.#userButton.addEventListener(
+			"click",
+			this.onUserButtonClick.bind(this),
+		);
 
-        this.#playerModal = UI.createModal("playerModal");
-        this.#playerModal.addEventListener("show", this.onPlayerModalShow.bind(this));
-        this.#playerModal.addEventListener("close", this.onPlayerModalClose.bind(this));
+		this.#playerModal = UI.createModal("playerModal");
+		this.#playerModal.addEventListener(
+			"show",
+			this.onPlayerModalShow.bind(this),
+		);
+		this.#playerModal.addEventListener(
+			"close",
+			this.onPlayerModalClose.bind(this),
+		);
 
-        this.#playerForm = UI.createForm("playerForm");
-        this.#playerForm.onSubmit(this.onPlayerFormSubmit.bind(this));
+		this.#playerForm = UI.createForm("playerForm");
+		this.#playerForm.onSubmit(this.onPlayerFormSubmit.bind(this));
 
-        this.#winnerModal = UI.createModal("winnerModal");
-        this.#winnerModal.addEventListener("close", this.onWinnerModalClose.bind(this));
-        document.addEventListener("gameover", this.onGameover.bind(this));
+		this.#winnerModal = UI.createModal("winnerModal");
+		this.#winnerModal.addEventListener(
+			"close",
+			this.onWinnerModalClose.bind(this),
+		);
+		document.addEventListener("gameover", this.onGameover.bind(this));
 
-        this.#okWinnerButton = UI.createButton("okWinnerButton");
-        this.#okWinnerButton.addEventListener("click", this.onOkWinnerButtonClick.bind(this));
+		this.#okWinnerButton = UI.createButton("okWinnerButton");
+		this.#okWinnerButton.addEventListener(
+			"click",
+			this.onOkWinnerButtonClick.bind(this),
+		);
 
-        document.addEventListener("contextmenu", event => event.preventDefault());
+		document.addEventListener("contextmenu", (event) => event.preventDefault());
 
-        this.#playButton.click();
-    }
+		this.#playButton.click();
+	}
 
-    private setPlayers(value: Player[]) {
-        this.#players = value;
-    }
+	private setPlayers(value: Player[]) {
+		this.#players = value;
+	}
 
-    private onResetButtonToggle(): void {
-        if (this.#resetButton.toggled) {
-            this.#resetModal.show();
+	private onResetButtonToggle(): void {
+		if (this.#resetButton.toggled) {
+			this.#resetModal.show();
 
-            if (this.#playButton.toggled) {
-                this.#playButton.click();
-            }
-        }
-    }
+			if (this.#playButton.toggled) {
+				this.#playButton.click();
+			}
+		}
+	}
 
-    private onResetButtonClick(): void {
-        this.#resetButton.toggle();
-    }
+	private onResetButtonClick(): void {
+		this.#resetButton.toggle();
+	}
 
-    private onResetModalClose(): void {
-        if (this.#resetButton.toggled) {
-            this.#resetButton.click();
-        }
+	private onResetModalClose(): void {
+		if (this.#resetButton.toggled) {
+			this.#resetButton.click();
+		}
 
-        if (!this.#playButton.toggled) {
-            this.#playButton.click();
-        }
-    }
+		if (!this.#playButton.toggled) {
+			this.#playButton.click();
+		}
+	}
 
-    private onNoResetButtonClick(): void {
-        this.#resetModal.close();
-    }
+	private onNoResetButtonClick(): void {
+		this.#resetModal.close();
+	}
 
-    private onYesResetButtonClick(): void {
-        document.dispatchEvent(new Event("gamereset"));
-        this.#playButton.enabled = true;
+	private onYesResetButtonClick(): void {
+		document.dispatchEvent(new Event("gamereset"));
+		this.#playButton.enabled = true;
 
-        this.#resetModal.close();
-    }
-    
-    private onPlayButtonToggle(): void {
-        if (this.#playButton.toggled) {
-            document.dispatchEvent(new Event("gameresume"));
-            this.#playButton.changeIcon("fa-pause");
-        } else {
-            document.dispatchEvent(new Event("gamepause"));
-            this.#playButton.changeIcon("fa-play");
-        }
-    }
+		this.#resetModal.close();
+	}
 
-    private onPlayButtonClick(): void {
-        this.#playButton.toggle();
-    }
+	private onPlayButtonToggle(): void {
+		if (this.#playButton.toggled) {
+			document.dispatchEvent(new Event("gameresume"));
+			this.#playButton.changeIcon("fa-pause");
+		} else {
+			document.dispatchEvent(new Event("gamepause"));
+			this.#playButton.changeIcon("fa-play");
+		}
+	}
 
-    private onUserButtonToggle(): void {
-        if (this.#userButton.toggled) {
-            this.#playerModal.show();
+	private onPlayButtonClick(): void {
+		this.#playButton.toggle();
+	}
 
-            if (this.#playButton.toggled) {
-                this.#playButton.click();
-            }
-        }
-    }
+	private onUserButtonToggle(): void {
+		if (this.#userButton.toggled) {
+			this.#playerModal.show();
 
-    private onUserButtonClick(): void {
-        this.#userButton.toggle();
-    }
+			if (this.#playButton.toggled) {
+				this.#playButton.click();
+			}
+		}
+	}
 
-    private onPlayerModalShow(): void {
-        const playerOne = this.#players[0];
-        const playerTwo = this.#players[1];
+	private onUserButtonClick(): void {
+		this.#userButton.toggle();
+	}
 
-        const values = {
-            "playerOne": playerOne.isDefaultName() ? "" : playerOne.name,
-            "playerTwo": playerTwo.isDefaultName() ? "" : playerTwo.name
-        };
-        
-        this.#playerForm.insertValues(values);
-    }
+	private onPlayerModalShow(): void {
+		const playerOne = this.#players[0];
+		const playerTwo = this.#players[1];
 
-    private onPlayerModalClose(): void {
-        if (this.#userButton.toggled) {
-            this.#userButton.click();
-        }
+		const values = {
+			playerOne: playerOne.isDefaultName() ? "" : playerOne.name,
+			playerTwo: playerTwo.isDefaultName() ? "" : playerTwo.name,
+		};
 
-        if (!this.#playButton.toggled) {
-            this.#playButton.click();
-        }
-    }
+		this.#playerForm.insertValues(values);
+	}
 
-    private onPlayerFormSubmit(formData: FormData): void {
-        const nameOne = formData.get("playerOne")?.toString().trim();
-        const nameTwo = formData.get("playerTwo")?.toString().trim();
-    
-        const playerOne = this.#players[0];
-        const playerTwo = this.#players[1];
-        
-        playerOne.name = nameOne || "";
-        playerTwo.name = nameTwo || "";
+	private onPlayerModalClose(): void {
+		if (this.#userButton.toggled) {
+			this.#userButton.click();
+		}
 
-        this.#observable.update(this.#players);
+		if (!this.#playButton.toggled) {
+			this.#playButton.click();
+		}
+	}
 
-        this.#playerModal.close();
-    }
+	private onPlayerFormSubmit(formData: FormData): void {
+		const nameOne = formData.get("playerOne")?.toString().trim();
+		const nameTwo = formData.get("playerTwo")?.toString().trim();
 
-    private onGameover() {
-        const winner = this.#players.find(player => player.winner);
-        const message = winner ? `${winner.name} has won!` : "It's a draw!";
+		const playerOne = this.#players[0];
+		const playerTwo = this.#players[1];
 
-        if (this.#playButton.toggled) {
-            this.#playButton.click();
-        }
+		playerOne.name = nameOne || "";
+		playerTwo.name = nameTwo || "";
 
-        this.#playButton.enabled = false;
+		this.#observable.update(this.#players);
 
-        setTimeout(() => {
-            const winnerText = UI.getElementById("winnerText");
-            winnerText.innerText = message;
+		this.#playerModal.close();
+	}
 
-            this.#winnerModal.show();
-        }, 1000);
-    }
+	private onGameover() {
+		const winner = this.#players.find((player) => player.winner);
+		const message = winner ? `${winner.name} has won!` : "It's a draw!";
 
-    private onWinnerModalClose(): void {
-        const winnerText = UI.getElementById("winnerText");
-        winnerText.innerText = "";
+		if (this.#playButton.toggled) {
+			this.#playButton.click();
+		}
 
-        if (!this.#resetButton.toggled) {
-            this.#resetButton.click();
-        }
-    }
+		this.#playButton.enabled = false;
 
-    private onOkWinnerButtonClick(): void {
-        this.#winnerModal.close();
-    }
+		setTimeout(() => {
+			const winnerText = UI.getElementById("winnerText");
+			winnerText.innerText = message;
 
-    private static getElementById(id: string): HTMLElement {
-        const element = document.getElementById(id);
-        if (!element) {
-            throw Error(`No element found with "#${id}" id.`);
-        }
+			this.#winnerModal.show();
+		}, 1000);
+	}
 
-        return element;
-    }
+	private onWinnerModalClose(): void {
+		const winnerText = UI.getElementById("winnerText");
+		winnerText.innerText = "";
 
-    private static querySelector(parent: HTMLElement, query: string): HTMLElement {
-        const element = parent.querySelector(query);
-        if (!element || !(element instanceof HTMLElement)) {
-            throw Error(`No element found with "${query}" query.`);
-        }
+		if (!this.#resetButton.toggled) {
+			this.#resetButton.click();
+		}
+	}
 
-        return element;
-    }
+	private onOkWinnerButtonClick(): void {
+		this.#winnerModal.close();
+	}
 
-    private static createButton(id: string): Button {
-        const element = UI.getElementById(id);
-        if (!(element instanceof HTMLButtonElement)) {
-            throw Error(`The element with id "#${id}" is not a button.`);
-        }
+	private static getElementById(id: string): HTMLElement {
+		const element = document.getElementById(id);
+		if (!element) {
+			throw Error(`No element found with "#${id}" id.`);
+		}
 
-        return new Button(element);
-    }
+		return element;
+	}
 
-    private static createModal(id: string, closeButtonQuery: string = ".modal-close-button"): Modal {
-        const element = UI.getElementById(id);
-        if (!(element instanceof HTMLDialogElement)) {
-            throw Error(`The element with id "#${id}" is not a modal.`);
-        }
+	private static querySelector(
+		parent: HTMLElement,
+		query: string,
+	): HTMLElement {
+		const element = parent.querySelector(query);
+		if (!element || !(element instanceof HTMLElement)) {
+			throw Error(`No element found with "${query}" query.`);
+		}
 
-        const closeButton = UI.querySelector(element, closeButtonQuery);
-        if (!(closeButton instanceof HTMLButtonElement)) {
-            throw Error(`"${closeButtonQuery}" query is not a button.`);
-        }
+		return element;
+	}
 
-        return new Modal(element, closeButton);
-    }
+	private static createButton(id: string): Button {
+		const element = UI.getElementById(id);
+		if (!(element instanceof HTMLButtonElement)) {
+			throw Error(`The element with id "#${id}" is not a button.`);
+		}
 
-    private static createForm(id: string): Form {
-        const element = UI.getElementById(id);
-        if (!(element instanceof HTMLFormElement)) {
-            throw Error(`The element with id "#${id}" is not a form.`);
-        }
-        
-        return new Form(element);
-    }
+		return new Button(element);
+	}
+
+	private static createModal(
+		id: string,
+		closeButtonQuery = ".modal-close-button",
+	): Modal {
+		const element = UI.getElementById(id);
+		if (!(element instanceof HTMLDialogElement)) {
+			throw Error(`The element with id "#${id}" is not a modal.`);
+		}
+
+		const closeButton = UI.querySelector(element, closeButtonQuery);
+		if (!(closeButton instanceof HTMLButtonElement)) {
+			throw Error(`"${closeButtonQuery}" query is not a button.`);
+		}
+
+		return new Modal(element, closeButton);
+	}
+
+	private static createForm(id: string): Form {
+		const element = UI.getElementById(id);
+		if (!(element instanceof HTMLFormElement)) {
+			throw Error(`The element with id "#${id}" is not a form.`);
+		}
+
+		return new Form(element);
+	}
 }

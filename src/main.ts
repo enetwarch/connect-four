@@ -1,51 +1,51 @@
 import "./styles/style.css";
-import Player from "./modules/player.ts";
+import Game from "./controllers/game.ts";
 import Observable from "./controllers/observable.ts";
 import UI from "./controllers/ui.ts";
-import Game from "./controllers/game.ts";
+import Player from "./modules/player.ts";
 
 type Color = "" | "red" | "blue";
 
 interface Save {
-    "name": string,
-    "color": Color,
-    "number": number
-};
+	name: string;
+	color: Color;
+	number: number;
+}
 
 window.addEventListener("load", () => {
-    const players: Player[] = [];
+	const players: Player[] = [];
 
-    const storedPlayers = localStorage.getItem("players");
-    if (!storedPlayers) {
-        players.push(new Player("", "red", 1));
-        players.push(new Player("", "blue", 2));
-    } else {
-        const parsedPlayers: Save[] = JSON.parse(storedPlayers);
-        
-        parsedPlayers.forEach(player => {
-            players.push(new Player(player.name, player.color, player.number));
-        });
-    }
+	const storedPlayers = localStorage.getItem("players");
+	if (!storedPlayers) {
+		players.push(new Player("", "red", 1));
+		players.push(new Player("", "blue", 2));
+	} else {
+		const parsedPlayers: Save[] = JSON.parse(storedPlayers);
 
-    const observable = new Observable(players);
-    
-    new UI(observable);
-    new Game(observable);
+		parsedPlayers.forEach((player) => {
+			players.push(new Player(player.name, player.color, player.number));
+		});
+	}
 
-    window.addEventListener("beforeunload", () => {
-        const players: Save[] = [];
-        const sessionPlayers: Player[] = observable.players;
+	const observable = new Observable(players);
 
-        sessionPlayers.forEach(player => {
-            const save: Save = {
-                "name": player.name,
-                "color": player.color,
-                "number": player.number
-            };
+	new UI(observable);
+	new Game(observable);
 
-            players.push(save);
-        });
+	window.addEventListener("beforeunload", () => {
+		const players: Save[] = [];
+		const sessionPlayers: Player[] = observable.players;
 
-        localStorage.setItem("players", JSON.stringify(players));
-    });
+		sessionPlayers.forEach((player) => {
+			const save: Save = {
+				name: player.name,
+				color: player.color,
+				number: player.number,
+			};
+
+			players.push(save);
+		});
+
+		localStorage.setItem("players", JSON.stringify(players));
+	});
 });
