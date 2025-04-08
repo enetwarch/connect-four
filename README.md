@@ -7,10 +7,12 @@ This is a simple connect four game. The goal of this game is very similar to tic
 
 ### Tools
 
-* [pnpm](https://pnpm.io/): Package manager
-* [Vite](https://vite.dev/): Build tool
-* [TypeScript](https://www.typescriptlang.org/): Type safety
-* [Biome](https://biomejs.dev/): Formatting and linting
+* [pnpm](https://pnpm.io/): Package manager. An alternative to npm with better performance, notably it's disk space management.
+* [Vite](https://vite.dev/): Build tool. Very easy to use, modern, and batteries included, meaning it already works well out of the box.
+* [Vitest](https://vitest.dev/): Testing framework. Has very high compatibility with Vite and just like Vite, works well out of the box with little to no configuration.
+* [TypeScript](https://www.typescriptlang.org/): Type safety. Industry standard at this point because it enforces types, making it easier to know what to expect in your code.
+* [Biome](https://biomejs.dev/): Formatting and linting. Useful for having a consistent code structure.
+* [Vercel](https://vercel.com/): Hosting platform. Automatically detects a Vite project and lets it use Vite's build scripts for deploying the website.
 
 ### Resources
 
