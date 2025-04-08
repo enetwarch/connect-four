@@ -43,19 +43,35 @@ export default class Game {
 		return grid;
 	}
 
-	private setPlayers(value: Player[]) {
+	public setPlayers(value: Player[]) {
 		this.#players = value;
 	}
 
-	private pause() {
+	public get players(): Player[] {
+		return this.#players;
+	}
+
+	public get paused(): boolean {
+		return this.#paused;
+	}
+
+	public get finished(): boolean {
+		return this.#finished;
+	}
+
+	public get board(): Board {
+		return this.#board;
+	}
+
+	public pause() {
 		this.#paused = true;
 	}
 
-	private resume() {
+	public resume() {
 		this.#paused = false;
 	}
 
-	private reset(): void {
+	public reset(): void {
 		this.#paused = false;
 		this.#finished = false;
 
@@ -72,7 +88,7 @@ export default class Game {
 		this.#observable.update(this.#players);
 	}
 
-	private playTurn(cell: Cell): void {
+	public playTurn(cell: Cell): void {
 		if (this.#paused || this.#finished) return;
 
 		const currentPlayer = this.#players.find((player) => player.turn);
@@ -102,7 +118,7 @@ export default class Game {
 		this.#observable.update(this.#players);
 	}
 
-	private getNextPlayer(currentPlayer: Player): Player {
+	public getNextPlayer(currentPlayer: Player): Player {
 		const nextPlayerIndex = this.#players.indexOf(currentPlayer) + 1;
 		const nextPlayer = this.#players[nextPlayerIndex % this.#players.length];
 		return nextPlayer;
