@@ -19,6 +19,22 @@ export default class Board {
 		}
 	}
 
+	public get size(): Coordinates {
+		return [this.#grid.length, this.#grid[0].length];
+	}
+
+	public get coloredCoordinates(): Coordinates[] {
+		const coordinates: Coordinates[] = [];
+
+		for (const cell of this.#grid.flat(1)) {
+			if (cell.color !== "") {
+				coordinates.push(cell.coordinates);
+			}
+		}
+
+		return coordinates;
+	}
+
 	public reset(): void {
 		const cells: Cell[] = this.#grid.flat(1);
 		for (const cell of cells) {
@@ -80,11 +96,31 @@ export default class Board {
 		return false;
 	}
 
+	public findCell(coordinates: Coordinates): Cell | undefined {
+		const cells: Cell[] = this.#grid.flat(1);
+		const cell = cells.find((cell) => {
+			return cell.coordinates.every((coord, i) => {
+				return coord === coordinates[i];
+			});
+		});
+
+		return cell;
+	}
+
 	public highlightWinnerCells(coordinatesList: Coordinates[]): void {
 		for (const coordinates of coordinatesList) {
 			const cell = this.findCell(coordinates);
 			cell?.highlightAsWinner();
 		}
+	}
+
+	public isValidCoordinates(coordinates: Coordinates): boolean {
+		const [x, y] = coordinates;
+		if (x < 0 || y < 0) return false;
+		if (x >= this.#grid.length) return false;
+		if (y >= this.#grid[0].length) return false;
+
+		return true;
 	}
 
 	private getConsecutiveColors(
@@ -105,26 +141,6 @@ export default class Board {
 		}
 
 		return consecutiveMarks;
-	}
-
-	private isValidCoordinates(coordinates: Coordinates): boolean {
-		const [x, y] = coordinates;
-		if (x < 0 || y < 0) return false;
-		if (x >= this.#grid.length) return false;
-		if (y >= this.#grid[0].length) return false;
-
-		return true;
-	}
-
-	private findCell(coordinates: Coordinates): Cell | undefined {
-		const cells: Cell[] = this.#grid.flat(1);
-		const cell = cells.find((cell) => {
-			return cell.coordinates.every((coord, i) => {
-				return coord === coordinates[i];
-			});
-		});
-
-		return cell;
 	}
 
 	private static DIRECTIONS: Direction[] = [

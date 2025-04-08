@@ -35,6 +35,14 @@ export default class Game {
 		this.reset();
 	}
 
+	public static createBoardGrid(rows: number, columns: number): Cell[][] {
+		const grid = Array.from({ length: rows }, (_, x) => {
+			return Array.from({ length: columns }, (_, y) => new Cell([x, y]));
+		});
+
+		return grid;
+	}
+
 	private setPlayers(value: Player[]) {
 		this.#players = value;
 	}
@@ -98,13 +106,5 @@ export default class Game {
 		const nextPlayerIndex = this.#players.indexOf(currentPlayer) + 1;
 		const nextPlayer = this.#players[nextPlayerIndex % this.#players.length];
 		return nextPlayer;
-	}
-
-	private static createBoardGrid(rows: number, columns: number): Cell[][] {
-		const grid = Array.from({ length: rows }, (_, x) => {
-			return Array.from({ length: columns }, (_, y) => new Cell([x, y]));
-		});
-
-		return grid;
 	}
 }
